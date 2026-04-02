@@ -2,9 +2,9 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'https://qwwbiwlmg8.execute-api.ap-south-1.amazonaws.com/prod';
-const BUCKET_NAME = 'campus-lostfound-yash'; 
-const REGION = 'ap-south-1';
+const API_URL = import.meta.env.VITE_API_URL;
+const BUCKET_NAME = import.meta.env.VITE_BUCKET_NAME; 
+const REGION = import.meta.env.VITE_REGION;
 
 export default function PostItem() {
   const navigate = useNavigate();

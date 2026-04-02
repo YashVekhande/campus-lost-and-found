@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ClaimModal from '../components/ClaimModal'; // <-- Import our new Modal
 
-const API_URL = 'https://qwwbiwlmg8.execute-api.ap-south-1.amazonaws.com/prod';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Home() {
   const [items, setItems] = useState([]);
