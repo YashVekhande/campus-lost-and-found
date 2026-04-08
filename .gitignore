@@ -25,3 +25,8 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+# Terraform files
+terraform/terraform.exe
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
