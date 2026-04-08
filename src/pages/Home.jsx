@@ -33,7 +33,7 @@ export default function Home() {
     fetchItems();
   }, []);
 
-  if (loading) return <h2 style={{ textAlign: 'center', marginTop: '3rem' }}>Fetching from AWS...</h2>;
+  if (loading) return <h2 style={{ textAlign: 'center', marginTop: '3rem' }}>Fetching from AWS now....</h2>;
   if (error) return <h2 style={{ textAlign: 'center', color: 'var(--danger)', marginTop: '3rem' }}>{error}</h2>;
 
   return (
