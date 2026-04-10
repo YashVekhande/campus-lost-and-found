@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ClaimModal from '../components/ClaimModal'; // <-- Import our new Modal
+import ClaimModal from '../components/ClaimModal'; 
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,7 +9,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // New state to control the modal
+  // State to control the modal
   const [selectedItemToClaim, setSelectedItemToClaim] = useState(null); 
 
   useEffect(() => {
@@ -33,29 +33,37 @@ export default function Home() {
     fetchItems();
   }, []);
 
-  if (loading) return <h2 style={{ textAlign: 'center', marginTop: '3rem' }}>Fetching from AWS</h2>;
+  if (loading) return <h2 style={{ textAlign: 'center', marginTop: '3rem' }}>Fetching from AWS...</h2>;
   if (error) return <h2 style={{ textAlign: 'center', color: 'var(--danger)', marginTop: '3rem' }}>{error}</h2>;
 
   return (
     <div className="container">
-      <h1 style={{ marginBottom: '1rem' }}>Recent Activity</h1>
+      <div style={{ marginBottom: '2rem' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: '800', letterSpacing: '-1px' }}>Recent Activity</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Help your campus community recover their items.</p>
+      </div>
       
       <div className="items-grid">
-        {items.length === 0 ? <p>No items found. Be the first to post!</p> : (
+        {items.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>No items found. Be the first to post!</p> : (
           items.map((item) => (
             <div key={item.itemId} className="item-card">
               
               <img 
-                src={item.imageUrl || 'https://placehold.co/400x250?text=No+Image'} 
+                src={item.imageUrl || 'https://placehold.co/400x250/1e293b/94a3b8?text=No+Image'} 
                 alt="item" 
-                onError={(e) => { e.target.src = 'https://placehold.co/400x250?text=Image+Error'; }}
+                onError={(e) => { e.target.src = 'https://placehold.co/400x250/1e293b/ef4444?text=Image+Error'; }}
               />
               
-              <span className={`badge ${String(item.type || 'lost').toLowerCase()}`}>
-                {String(item.type || 'LOST').toUpperCase()}
-              </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className={`badge ${String(item.type || 'lost').toLowerCase()}`}>
+                  {String(item.type || 'LOST').toUpperCase()}
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  {item.postedAt ? new Date(item.postedAt).toLocaleDateString() : 'Recently'}
+                </span>
+              </div>
 
-              <p style={{ flexGrow: 1, fontWeight: '500' }}>
+              <p style={{ flexGrow: 1, fontWeight: '500', fontSize: '1.05rem' }}>
                 {item.description || "No description provided."}
               </p>
               
@@ -69,7 +77,6 @@ export default function Home() {
                 )}
               </div>
               
-              {/* Clicking this sets the item into state, which opens the modal */}
               <button 
                 onClick={() => setSelectedItemToClaim(item)}
                 style={{ marginTop: 'auto', width: '100%' }}
@@ -81,11 +88,13 @@ export default function Home() {
         )}
       </div>
 
-      {/* The Dynamic Modal Component */}
-      <ClaimModal 
-        item={selectedItemToClaim} 
-        onClose={() => setSelectedItemToClaim(null)} 
-      />
+      {/* FIX: Only render the modal when an item is clicked. This resets the state automatically! */}
+      {selectedItemToClaim && (
+        <ClaimModal 
+          item={selectedItemToClaim} 
+          onClose={() => setSelectedItemToClaim(null)} 
+        />
+      )}
     </div>
   );
 }

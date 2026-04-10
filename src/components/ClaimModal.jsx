@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-// MAKE SURE THIS IS YOUR ACTUAL API URL
-const API_URL = 'https://qwwbiwlmg8.execute-api.ap-south-1.amazonaws.com/prod';
+// Using your secure environment variable
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function ClaimModal({ item, onClose }) {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -30,7 +30,6 @@ export default function ClaimModal({ item, onClose }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      {/* e.stopPropagation() prevents clicking inside the box from closing the modal */}
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         
         {status === 'success' ? (
@@ -46,7 +45,7 @@ export default function ClaimModal({ item, onClose }) {
               Provide your details to prove ownership or arrange a meetup.
             </p>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
               <input 
                 type="text" required placeholder="Your Full Name" 
                 value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -62,7 +61,7 @@ export default function ClaimModal({ item, onClose }) {
               
               {status === 'error' && <p style={{ color: 'var(--danger)', fontSize: '0.85rem' }}>Network error. Try again.</p>}
               
-              <div className="modal-actions">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
                 <button type="button" className="btn-secondary" onClick={onClose} disabled={status === 'loading'}>
                   Cancel
                 </button>
