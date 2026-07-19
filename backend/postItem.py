@@ -36,6 +36,12 @@ def lambda_handler(event, context):
             'tags': body.get('tags', []), # The processImage function will update this later
             'imageUrl': body.get('imageUrl', ''),
             'contactEmail': body.get('contactEmail', ''),
+            
+            # --- NEW ADDITIONS FOR PROFILES ---
+            'username': body.get('username', 'Anonymous Student'),
+            'profilePic': body.get('profilePic', ''),
+            # ----------------------------------
+            
             'status': 'open',
             'postedAt': timestamp
         }

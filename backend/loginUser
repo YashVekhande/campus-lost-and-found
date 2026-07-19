@@ -1,0 +1,99 @@
+import json
+import boto3
+import os
+import hashlib
+import base64
+import hmac
+import time
+
+# Initialize DynamoDB
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('Users')
+
+# In a real production app, this secret should be stored securely
+# We are fetching it from Lambda Environment Variables (or using a default)
+JWT_SECRET = os.environ.get('JWT_SECRET', 'campus-super-secret-key') 
+
+def base64url_encode(data):
+    """Helper function to encode data into base64url format for JWTs"""
+    return base64.urlsafe_b64encode(data).rstrip(b'=').decode('utf-8')
+
+def lambda_handler(event, context):
+    try:
+        body = json.loads(event.get('body', '{}'))
+        email = body.get('email')
+        password = body.get('password')
+
+        if not email or not password:
+            return {
+                'statusCode': 400,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Email and password are required'})
+            }
+
+        # 1. Fetch User from DynamoDB
+        response = table.get_item(Key={'email': email})
+        user = response.get('Item')
+        
+        # If user doesn't exist, return a generic error (prevents email guessing)
+        if not user:
+            return {
+                'statusCode': 401,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Invalid credentials'})
+            }
+
+        # 2. Verify Password
+        # Decode the stored hash and salt from base64 back into raw bytes
+        stored_hash = base64.b64decode(user['password_hash'])
+        stored_salt = base64.b64decode(user['salt'])
+        
+        # Hash the incoming password with the exact same salt
+        test_hash = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), stored_salt, 100000)
+        
+        # Securely compare the hashes (hmac.compare_digest prevents timing attacks)
+        if not hmac.compare_digest(stored_hash, test_hash):
+            return {
+                'statusCode': 401,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Invalid credentials'})
+            }
+
+        # 3. Mint the JWT (The ID Card)
+        header = {"alg": "HS256", "typ": "JWT"}
+        # Expiration time: Current time + 1 hour (3600 seconds)
+        payload = {"email": email, "exp": int(time.time()) + 3600}
+        
+        # Convert header and payload to base64url strings
+        b64_header = base64url_encode(json.dumps(header).encode('utf-8'))
+        b64_payload = base64url_encode(json.dumps(payload).encode('utf-8'))
+        
+        # Create the cryptographic signature
+        signature_message = f"{b64_header}.{b64_payload}".encode('utf-8')
+        signature = hmac.new(JWT_SECRET.encode('utf-8'), signature_message, hashlib.sha256).digest()
+        b64_signature = base64url_encode(signature)
+        
+        # Combine everything into the final JWT string
+        jwt_token = f"{b64_header}.{b64_payload}.{b64_signature}"
+
+        # 4. Return the Token AND the User Profile Data
+        return {
+            'statusCode': 200,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({
+                'message': 'Login successful',
+                'token': jwt_token,
+                'user': {
+                    'email': user.get('email'),
+                    'username': user.get('username', 'Student'),
+                    'profilePic': user.get('profilePic', '')
+                }
+            })
+        }
+    except Exception as e:
+        print(f"Error: {e}")
+        return {
+            'statusCode': 500,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Internal server error'})
+        }
