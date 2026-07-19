@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,16 +9,37 @@ const REGION = import.meta.env.VITE_REGION;
 export default function PostItem() {
   const navigate = useNavigate();
   const [uploading, setUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  
+  const userString = localStorage.getItem('user');
+  const currentUser = userString ? JSON.parse(userString) : null;
+
+  // Security Guard: Boot unauthorized users to /auth
+  useEffect(() => {
+    if (!currentUser) {
+      alert("You must be logged in to post items!");
+      navigate('/auth');
+    }
+  }, [currentUser, navigate]);
+
   const [formData, setFormData] = useState({
     type: 'lost',
     description: '',
-    contactEmail: '',
     file: null
   });
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, file });
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.file) return alert("Please select an image!");
+    if (!currentUser) return;
     
     setUploading(true);
 
@@ -32,12 +53,15 @@ export default function PostItem() {
         headers: { 'Content-Type': formData.file.type }
       });
 
+      // Construct item payload containing the poster's profile data
       const itemData = {
         itemId: itemId,
         type: formData.type,
         description: formData.description,
         imageUrl: s3Url,
-        contactEmail: formData.contactEmail
+        contactEmail: currentUser.email,        // Pulled securely from user session
+        username: currentUser.username,          // Saved explicitly for fast UI display
+        profilePic: currentUser.profilePic        // Saved explicitly for fast UI display
       };
 
       await axios.post(`${API_URL}/items`, itemData);
@@ -47,80 +71,65 @@ export default function PostItem() {
       
     } catch (error) {
       console.error("Error posting item:", error);
-      alert("Something went wrong. Check the console.");
+      alert("Something went wrong.");
     } finally {
       setUploading(false);
     }
   };
 
+  if (!currentUser) return null;
+
   return (
-    <div className="container" style={{ maxWidth: '600px' }}>
-      <div className="item-card">
-        <h2 style={{ marginBottom: '1.5rem' }}>Post an Item</h2>
+    <div className="post-page-wrapper">
+      <div className="post-glass-card">
+        <h2>Post an Item</h2>
         
-        {/* Notice how clean the form is now without inline styles! */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-          
-          <div>
-            <label style={{ fontWeight: '500', display: 'block', marginBottom: '0.5rem' }}>Item Type:</label>
+        <form onSubmit={handleSubmit}>
+          <div className="modern-form-group">
+            <label>Item Type:</label>
             <select 
+              className="modern-select"
               value={formData.type} 
               onChange={(e) => setFormData({...formData, type: e.target.value})}
-              style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
             >
               <option value="lost">Lost</option>
               <option value="found">Found</option>
             </select>
           </div>
 
-          <div>
-            <label style={{ fontWeight: '500', display: 'block', marginBottom: '0.5rem' }}>Description:</label>
+          <div className="modern-form-group">
+            <label>Description:</label>
             <textarea 
-              required rows="3"
+              className="modern-textarea"
+              required 
+              rows="3"
               value={formData.description}
               onChange={(e) => setFormData({...formData, description: e.target.value})}
-              style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontFamily: 'inherit' }}
               placeholder="e.g., Left my blue hydroflask in the library..."
-            />
+            ></textarea>
           </div>
 
-          <div>
-            <label style={{ fontWeight: '500', display: 'block', marginBottom: '0.5rem' }}>Contact Email:</label>
-            <input 
-              type="email" required
-              value={formData.contactEmail}
-              onChange={(e) => setFormData({...formData, contactEmail: e.target.value})}
-              style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
-            />
-          </div>
-
-          <div>
-            <label style={{ fontWeight: '500', display: 'block', marginBottom: '0.5rem' }}>Upload Photo:</label>
-            <input 
-              type="file" accept="image/*" required
-              onChange={(e) => setFormData({...formData, file: e.target.files[0]})}
-              style={{ width: '100%', padding: '10px', border: '1px dashed #cbd5e1', borderRadius: '6px', background: '#f8fafc' }}
-            />
-            <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '4px' }}>
+          <div className="modern-form-group">
+            <label>Upload Photo:</label>
+            <label className="file-upload-label">
+              {previewUrl ? (
+                <img src={previewUrl} alt="Preview" className="preview-image" />
+              ) : (
+                <span>Click to browse for a photo</span>
+              )}
+              <input type="file" accept="image/*" required onChange={handleFileChange} />
+            </label>
+            <small style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '4px' }}>
               Required for AI Tagging
             </small>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <button 
-              type="button" 
-              className="btn-secondary" 
-              style={{ flex: 1 }}
-              onClick={() => navigate('/')}
-            >
+          <div className="form-actions">
+            <button type="button" className="btn-modern btn-cancel" onClick={() => navigate('/')}>
               Cancel
             </button>
-            <button 
-              type="submit" 
-              disabled={uploading}
-              style={{ flex: 2 }}
-            >
-              {uploading ? 'Uploading to AWS...' : 'Submit Item'}
+            <button type="submit" className="btn-modern btn-submit" disabled={uploading}>
+              {uploading ? 'Uploading...' : 'Submit Item'}
             </button>
           </div>
         </form>

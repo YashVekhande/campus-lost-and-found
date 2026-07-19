@@ -1,77 +1,79 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-// Using your secure environment variable
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function ClaimModal({ item, onClose }) {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  if (!item) return null; // Don't render if no item is selected
+  const userString = localStorage.getItem('user');
+  const currentUser = userString ? JSON.parse(userString) : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('loading');
-
+    if (!currentUser) {
+      alert("You must be logged in to claim an item.");
+      return;
+    }
+    
+    setSubmitting(true);
     try {
       await axios.post(`${API_URL}/claims`, {
         itemId: item.itemId,
-        claimerName: formData.name,
-        claimerEmail: formData.email,
-        message: formData.message
+        claimerName: currentUser.username,
+        claimerEmail: currentUser.email,
+        message: message
       });
-      setStatus('success');
+      alert("Claim submitted successfully! The owner has been notified.");
+      onClose();
     } catch (error) {
-      console.error("Claim error:", error);
-      setStatus('error');
+      console.error(error);
+      alert("Failed to submit claim. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
+  // Truncate the description so the title doesn't overflow
+  const shortDescription = item.description && item.description.length > 40 
+    ? item.description.substring(0, 40) + "..." 
+    : item.description;
+
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
         
-        {status === 'success' ? (
-          <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-            <h2 style={{ color: 'var(--success)', marginBottom: '1rem' }}>Claim Submitted!</h2>
-            <p>Your message has been securely sent to our AWS Database. The person who posted this will be notified.</p>
-            <button onClick={onClose} style={{ marginTop: '1.5rem', width: '100%' }}>Close</button>
+        {/* Title now dynamically uses the actual description */}
+        <h2 style={{ marginBottom: '1rem', fontSize: '1.4rem' }}>
+          Claim: {shortDescription || 'Item'}
+        </h2>
+        
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+          Send a message to <strong>{item.username || 'the owner'}</strong> to prove this is yours.
+        </p>
+        
+        <form onSubmit={handleSubmit}>
+          <textarea 
+            required
+            rows="4"
+            placeholder="Describe specific details about the item (e.g. scratches, contents, lock screen wallpaper)..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            style={{ 
+              width: '100%', padding: '12px', 
+              background: 'var(--bg-color)', color: 'var(--text-main)',
+              border: '1px solid var(--border)', borderRadius: '8px'
+            }}
+          ></textarea>
+          
+          <div className="modal-actions">
+            <button type="button" className="btn-secondary" onClick={onClose}>Cancel</button>
+            <button type="submit" disabled={submitting}>
+              {submitting ? 'Sending...' : 'Send Claim'}
+            </button>
           </div>
-        ) : (
-          <>
-            <h2>Claim this {item.tags && item.tags[0] ? item.tags[0] : 'Item'}</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1rem' }}>
-              Provide your details to prove ownership or arrange a meetup.
-            </p>
-
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
-              <input 
-                type="text" required placeholder="Your Full Name" 
-                value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})}
-              />
-              <input 
-                type="email" required placeholder="Your Student Email" 
-                value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})}
-              />
-              <textarea 
-                required rows="3" placeholder="Identify a unique scratch, what's inside, or where you lost it..."
-                value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})}
-              />
-              
-              {status === 'error' && <p style={{ color: 'var(--danger)', fontSize: '0.85rem' }}>Network error. Try again.</p>}
-              
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
-                <button type="button" className="btn-secondary" onClick={onClose} disabled={status === 'loading'}>
-                  Cancel
-                </button>
-                <button type="submit" disabled={status === 'loading'}>
-                  {status === 'loading' ? 'Sending to AWS...' : 'Submit Claim'}
-                </button>
-              </div>
-            </form>
-          </>
-        )}
+        </form>
       </div>
     </div>
   );

@@ -6,10 +6,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Home() {
   const [items, setItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(''); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // State to control the modal
   const [selectedItemToClaim, setSelectedItemToClaim] = useState(null); 
 
   useEffect(() => {
@@ -33,6 +32,16 @@ export default function Home() {
     fetchItems();
   }, []);
 
+  // Filter items based on the search query (checks description)
+  const filteredItems = items.filter(item => {
+    const query = searchQuery.toLowerCase();
+    const matchesDescription = item.description?.toLowerCase().includes(query);
+    // We can still secretly check backend tags if they exist, without showing them
+    const matchesTags = item.tags?.some(tag => tag.toLowerCase().includes(query));
+    
+    return matchesDescription || matchesTags;
+  });
+
   if (loading) return <h2 style={{ textAlign: 'center', marginTop: '3rem' }}>Fetching from AWS...</h2>;
   if (error) return <h2 style={{ textAlign: 'center', color: 'var(--danger)', marginTop: '3rem' }}>{error}</h2>;
 
@@ -43,11 +52,46 @@ export default function Home() {
         <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Help your campus community recover their items.</p>
       </div>
       
+      {/* Search Bar UI */}
+      <div style={{ marginBottom: '2rem' }}>
+        <input 
+          type="text" 
+          placeholder="Search by item description..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '14px 20px',
+            borderRadius: '12px',
+            border: '1px solid var(--border)',
+            background: 'var(--card-bg)',
+            color: 'var(--text-main)',
+            fontSize: '1rem',
+            boxShadow: 'var(--shadow)'
+          }}
+        />
+      </div>
+      
       <div className="items-grid">
-        {items.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>No items found. Be the first to post!</p> : (
-          items.map((item) => (
+        {filteredItems.length === 0 ? (
+          <p style={{ color: 'var(--text-muted)' }}>
+            {searchQuery ? "No items match your search." : "No items found. Be the first to post!"}
+          </p>
+        ) : (
+          filteredItems.map((item) => (
             <div key={item.itemId} className="item-card">
               
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingBottom: '4px' }}>
+                <img 
+                  src={item.profilePic || `https://ui-avatars.com/api/?name=Student&background=random`} 
+                  alt="Poster Profile" 
+                  style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                />
+                <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#e2e8f0' }}>
+                  {item.username || 'Anonymous Student'}
+                </span>
+              </div>
+
               <img 
                 src={item.imageUrl || 'https://placehold.co/400x250/1e293b/94a3b8?text=No+Image'} 
                 alt="item" 
@@ -63,19 +107,10 @@ export default function Home() {
                 </span>
               </div>
 
-              <p style={{ flexGrow: 1, fontWeight: '500', fontSize: '1.05rem' }}>
+              {/* The description now takes center stage */}
+              <p style={{ flexGrow: 1, fontWeight: '500', fontSize: '1.05rem', marginBottom: '1rem' }}>
                 {item.description || "No description provided."}
               </p>
-              
-              <div className="tag-container">
-                {!item.tags || item.tags.length === 0 ? (
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>AI analyzing...</span>
-                ) : (
-                  item.tags.map((tag, index) => (
-                    <span key={index} className="tag-pill">{tag}</span>
-                  ))
-                )}
-              </div>
               
               <button 
                 onClick={() => setSelectedItemToClaim(item)}
@@ -88,7 +123,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* FIX: Only render the modal when an item is clicked. This resets the state automatically! */}
       {selectedItemToClaim && (
         <ClaimModal 
           item={selectedItemToClaim} 
