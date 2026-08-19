@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+service ItemService {
+  rpc CheckItemAvailability (ItemRequest) returns (ItemResponse) {}
+  rpc SubmitClaim (ClaimRequest) returns (ClaimResponse) {}
+}
+
+message ItemRequest {
+  string item_id = 1;
+  int32 lamport_clock = 2; 
+}
+
+message ItemResponse {
+  bool available = 1;
+  string message = 2;
+  int32 lamport_clock = 3; 
+}
+
+message ClaimRequest {
+  string item_id = 1;
+  string user_email = 2;
+  int32 lamport_clock = 3; 
+}
+
+message ClaimResponse {
+  bool success = 1;
+  string message = 2;
+  int32 lamport_clock = 3; 
+}
+
+// Peer-to-peer mutual exclusion service.
+// Every node runs this server AND calls it on its peers.
+service MutexService {
+  rpc RequestAccess (AccessRequest) returns (AccessReply);
+}
+
+message AccessRequest {
+  int32 node_id = 1;
+  int32 timestamp = 2;
+}
+
+message AccessReply {
+  int32 node_id = 1;
+  int32 timestamp = 2;
+}
