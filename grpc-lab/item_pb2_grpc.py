@@ -140,10 +140,8 @@ class ItemService:
             _registered_method=True)
 
 
-class MutexServiceStub:
-    """Peer-to-peer mutual exclusion service.
-    Every node runs this server AND calls it on its peers.
-    """
+class ClaimLockServiceStub:
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -152,16 +150,14 @@ class MutexServiceStub:
             channel: A grpc.Channel.
         """
         self.RequestAccess = channel.unary_unary(
-                '/MutexService/RequestAccess',
+                '/ClaimLockService/RequestAccess',
                 request_serializer=item__pb2.AccessRequest.SerializeToString,
                 response_deserializer=item__pb2.AccessReply.FromString,
                 _registered_method=True)
 
 
-class MutexServiceServicer:
-    """Peer-to-peer mutual exclusion service.
-    Every node runs this server AND calls it on its peers.
-    """
+class ClaimLockServiceServicer:
+    """Missing associated documentation comment in .proto file."""
 
     def RequestAccess(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -170,7 +166,7 @@ class MutexServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
 
-def add_MutexServiceServicer_to_server(servicer, server):
+def add_ClaimLockServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'RequestAccess': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestAccess,
@@ -179,16 +175,14 @@ def add_MutexServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'MutexService', rpc_method_handlers)
+            'ClaimLockService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('MutexService', rpc_method_handlers)
+    server.add_registered_method_handlers('ClaimLockService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class MutexService:
-    """Peer-to-peer mutual exclusion service.
-    Every node runs this server AND calls it on its peers.
-    """
+class ClaimLockService:
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def RequestAccess(request,
@@ -204,9 +198,357 @@ class MutexService:
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/MutexService/RequestAccess',
+            '/ClaimLockService/RequestAccess',
             item__pb2.AccessRequest.SerializeToString,
             item__pb2.AccessReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+
+class LockServiceStub:
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.AcquireLock = channel.unary_unary(
+                '/LockService/AcquireLock',
+                request_serializer=item__pb2.LockRequest.SerializeToString,
+                response_deserializer=item__pb2.LockReply.FromString,
+                _registered_method=True)
+        self.ReleaseLock = channel.unary_unary(
+                '/LockService/ReleaseLock',
+                request_serializer=item__pb2.LockRequest.SerializeToString,
+                response_deserializer=item__pb2.LockReply.FromString,
+                _registered_method=True)
+
+
+class LockServiceServicer:
+    """Missing associated documentation comment in .proto file."""
+
+    def AcquireLock(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReleaseLock(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_LockServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'AcquireLock': grpc.unary_unary_rpc_method_handler(
+                    servicer.AcquireLock,
+                    request_deserializer=item__pb2.LockRequest.FromString,
+                    response_serializer=item__pb2.LockReply.SerializeToString,
+            ),
+            'ReleaseLock': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReleaseLock,
+                    request_deserializer=item__pb2.LockRequest.FromString,
+                    response_serializer=item__pb2.LockReply.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'LockService', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+    server.add_registered_method_handlers('LockService', rpc_method_handlers)
+
+
+ # This class is part of an EXPERIMENTAL API.
+class LockService:
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def AcquireLock(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/LockService/AcquireLock',
+            item__pb2.LockRequest.SerializeToString,
+            item__pb2.LockReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReleaseLock(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/LockService/ReleaseLock',
+            item__pb2.LockRequest.SerializeToString,
+            item__pb2.LockReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+
+class WorkerServiceStub:
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.HandleRequest = channel.unary_unary(
+                '/WorkerService/HandleRequest',
+                request_serializer=item__pb2.WorkRequest.SerializeToString,
+                response_deserializer=item__pb2.WorkReply.FromString,
+                _registered_method=True)
+
+
+class WorkerServiceServicer:
+    """Missing associated documentation comment in .proto file."""
+
+    def HandleRequest(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_WorkerServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'HandleRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.HandleRequest,
+                    request_deserializer=item__pb2.WorkRequest.FromString,
+                    response_serializer=item__pb2.WorkReply.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'WorkerService', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+    server.add_registered_method_handlers('WorkerService', rpc_method_handlers)
+
+
+ # This class is part of an EXPERIMENTAL API.
+class WorkerService:
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def HandleRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/WorkerService/HandleRequest',
+            item__pb2.WorkRequest.SerializeToString,
+            item__pb2.WorkReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+
+class ReplicaServiceStub:
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.SaveValue = channel.unary_unary(
+                '/ReplicaService/SaveValue',
+                request_serializer=item__pb2.ValueUpdate.SerializeToString,
+                response_deserializer=item__pb2.SaveAck.FromString,
+                _registered_method=True)
+        self.SyncUpdate = channel.unary_unary(
+                '/ReplicaService/SyncUpdate',
+                request_serializer=item__pb2.ValueUpdate.SerializeToString,
+                response_deserializer=item__pb2.SaveAck.FromString,
+                _registered_method=True)
+        self.GetValue = channel.unary_unary(
+                '/ReplicaService/GetValue',
+                request_serializer=item__pb2.ValueQuery.SerializeToString,
+                response_deserializer=item__pb2.ValueState.FromString,
+                _registered_method=True)
+
+
+class ReplicaServiceServicer:
+    """Missing associated documentation comment in .proto file."""
+
+    def SaveValue(self, request, context):
+        """client -> replica (local write)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SyncUpdate(self, request, context):
+        """replica -> replica (gossip)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetValue(self, request, context):
+        """read current state
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_ReplicaServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'SaveValue': grpc.unary_unary_rpc_method_handler(
+                    servicer.SaveValue,
+                    request_deserializer=item__pb2.ValueUpdate.FromString,
+                    response_serializer=item__pb2.SaveAck.SerializeToString,
+            ),
+            'SyncUpdate': grpc.unary_unary_rpc_method_handler(
+                    servicer.SyncUpdate,
+                    request_deserializer=item__pb2.ValueUpdate.FromString,
+                    response_serializer=item__pb2.SaveAck.SerializeToString,
+            ),
+            'GetValue': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetValue,
+                    request_deserializer=item__pb2.ValueQuery.FromString,
+                    response_serializer=item__pb2.ValueState.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'ReplicaService', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+    server.add_registered_method_handlers('ReplicaService', rpc_method_handlers)
+
+
+ # This class is part of an EXPERIMENTAL API.
+class ReplicaService:
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def SaveValue(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ReplicaService/SaveValue',
+            item__pb2.ValueUpdate.SerializeToString,
+            item__pb2.SaveAck.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SyncUpdate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ReplicaService/SyncUpdate',
+            item__pb2.ValueUpdate.SerializeToString,
+            item__pb2.SaveAck.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetValue(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ReplicaService/GetValue',
+            item__pb2.ValueQuery.SerializeToString,
+            item__pb2.ValueState.FromString,
             options,
             channel_credentials,
             insecure,
