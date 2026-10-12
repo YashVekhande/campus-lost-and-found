@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nitem.proto\"5\n\x0bItemRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\t\x12\x15\n\rlamport_clock\x18\x02 \x01(\x05\"I\n\x0cItemResponse\x12\x11\n\tavailable\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x15\n\rlamport_clock\x18\x03 \x01(\x05\"J\n\x0c\x43laimRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\t\x12\x12\n\nuser_email\x18\x02 \x01(\t\x12\x15\n\rlamport_clock\x18\x03 \x01(\x05\"H\n\rClaimResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x15\n\rlamport_clock\x18\x03 \x01(\x05\"3\n\rAccessRequest\x12\x0f\n\x07node_id\x18\x01 \x01(\x05\x12\x11\n\ttimestamp\x18\x02 \x01(\x05\"1\n\x0b\x41\x63\x63\x65ssReply\x12\x0f\n\x07node_id\x18\x01 \x01(\x05\x12\x11\n\ttimestamp\x18\x02 \x01(\x05\"H\n\x0bLockRequest\x12\x13\n\x0bresource_id\x18\x01 \x01(\t\x12\x11\n\tholder_id\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x05\"-\n\tLockReply\x12\x0f\n\x07granted\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"!\n\x0bWorkRequest\x12\x12\n\nrequest_id\x18\x01 \x01(\x05\"C\n\tWorkReply\x12\x12\n\nrequest_id\x18\x01 \x01(\x05\x12\x12\n\nhandled_by\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\"^\n\x0bValueUpdate\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x19\n\x11lamport_timestamp\x18\x03 \x01(\x05\x12\x16\n\x0eorigin_replica\x18\x04 \x01(\t\"G\n\x07SaveAck\x12\x10\n\x08\x61\x63\x63\x65pted\x18\x01 \x01(\x08\x12\x0f\n\x07replica\x18\x02 \x01(\t\x12\x19\n\x11lamport_timestamp\x18\x03 \x01(\x05\"\x19\n\nValueQuery\x12\x0b\n\x03key\x18\x01 \x01(\t\"]\n\nValueState\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x19\n\x11lamport_timestamp\x18\x03 \x01(\x05\x12\x16\n\x0eorigin_replica\x18\x04 \x01(\t2u\n\x0bItemService\x12\x36\n\x15\x43heckItemAvailability\x12\x0c.ItemRequest\x1a\r.ItemResponse\"\x00\x12.\n\x0bSubmitClaim\x12\r.ClaimRequest\x1a\x0e.ClaimResponse\"\x00\x32\x41\n\x10\x43laimLockService\x12-\n\rRequestAccess\x12\x0e.AccessRequest\x1a\x0c.AccessReply2_\n\x0bLockService\x12\'\n\x0b\x41\x63quireLock\x12\x0c.LockRequest\x1a\n.LockReply\x12\'\n\x0bReleaseLock\x12\x0c.LockRequest\x1a\n.LockReply2:\n\rWorkerService\x12)\n\rHandleRequest\x12\x0c.WorkRequest\x1a\n.WorkReply2\x81\x01\n\x0eReplicaService\x12#\n\tSaveValue\x12\x0c.ValueUpdate\x1a\x08.SaveAck\x12$\n\nSyncUpdate\x12\x0c.ValueUpdate\x1a\x08.SaveAck\x12$\n\x08GetValue\x12\x0b.ValueQuery\x1a\x0b.ValueStateb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nitem.proto\"5\n\x0bItemRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\t\x12\x15\n\rlamport_clock\x18\x02 \x01(\x05\"I\n\x0cItemResponse\x12\x11\n\tavailable\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x15\n\rlamport_clock\x18\x03 \x01(\x05\"J\n\x0c\x43laimRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\t\x12\x12\n\nuser_email\x18\x02 \x01(\t\x12\x15\n\rlamport_clock\x18\x03 \x01(\x05\"H\n\rClaimResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x15\n\rlamport_clock\x18\x03 \x01(\x05\"3\n\rAccessRequest\x12\x0f\n\x07node_id\x18\x01 \x01(\x05\x12\x11\n\ttimestamp\x18\x02 \x01(\x05\"1\n\x0b\x41\x63\x63\x65ssReply\x12\x0f\n\x07node_id\x18\x01 \x01(\x05\x12\x11\n\ttimestamp\x18\x02 \x01(\x05\"H\n\x0bLockRequest\x12\x13\n\x0bresource_id\x18\x01 \x01(\t\x12\x11\n\tholder_id\x18\x02 \x01(\x05\x12\x11\n\ttimestamp\x18\x03 \x01(\x05\"-\n\tLockReply\x12\x0f\n\x07granted\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"!\n\x0bWorkRequest\x12\x12\n\nrequest_id\x18\x01 \x01(\x05\"C\n\tWorkReply\x12\x12\n\nrequest_id\x18\x01 \x01(\x05\x12\x12\n\nhandled_by\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\"^\n\x0bValueUpdate\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x19\n\x11lamport_timestamp\x18\x03 \x01(\x05\x12\x16\n\x0eorigin_replica\x18\x04 \x01(\t\"G\n\x07SaveAck\x12\x10\n\x08\x61\x63\x63\x65pted\x18\x01 \x01(\x08\x12\x0f\n\x07replica\x18\x02 \x01(\t\x12\x19\n\x11lamport_timestamp\x18\x03 \x01(\x05\"\x19\n\nValueQuery\x12\x0b\n\x03key\x18\x01 \x01(\t\"]\n\nValueState\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\x12\x19\n\x11lamport_timestamp\x18\x03 \x01(\x05\x12\x16\n\x0eorigin_replica\x18\x04 \x01(\t\"1\n\x0bVoteRequest\x12\x0c\n\x04term\x18\x01 \x01(\x05\x12\x14\n\x0c\x63\x61ndidate_id\x18\x02 \x01(\t\"/\n\tVoteReply\x12\x0c\n\x04term\x18\x01 \x01(\x05\x12\x14\n\x0cvote_granted\x18\x02 \x01(\x08\"3\n\x10HeartbeatRequest\x12\x0c\n\x04term\x18\x01 \x01(\x05\x12\x11\n\tleader_id\x18\x02 \x01(\t\"/\n\x0eHeartbeatReply\x12\x0c\n\x04term\x18\x01 \x01(\x05\x12\x0f\n\x07success\x18\x02 \x01(\x08\x32u\n\x0bItemService\x12\x36\n\x15\x43heckItemAvailability\x12\x0c.ItemRequest\x1a\r.ItemResponse\"\x00\x12.\n\x0bSubmitClaim\x12\r.ClaimRequest\x1a\x0e.ClaimResponse\"\x00\x32\x41\n\x10\x43laimLockService\x12-\n\rRequestAccess\x12\x0e.AccessRequest\x1a\x0c.AccessReply2_\n\x0bLockService\x12\'\n\x0b\x41\x63quireLock\x12\x0c.LockRequest\x1a\n.LockReply\x12\'\n\x0bReleaseLock\x12\x0c.LockRequest\x1a\n.LockReply2:\n\rWorkerService\x12)\n\rHandleRequest\x12\x0c.WorkRequest\x1a\n.WorkReply2\x81\x01\n\x0eReplicaService\x12#\n\tSaveValue\x12\x0c.ValueUpdate\x1a\x08.SaveAck\x12$\n\nSyncUpdate\x12\x0c.ValueUpdate\x1a\x08.SaveAck\x12$\n\x08GetValue\x12\x0b.ValueQuery\x1a\x0b.ValueState2k\n\x0bRaftService\x12\'\n\x0bRequestVote\x12\x0c.VoteRequest\x1a\n.VoteReply\x12\x33\n\rAppendEntries\x12\x11.HeartbeatRequest\x1a\x0f.HeartbeatReplyb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -59,14 +59,24 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_VALUEQUERY']._serialized_end=817
   _globals['_VALUESTATE']._serialized_start=819
   _globals['_VALUESTATE']._serialized_end=912
-  _globals['_ITEMSERVICE']._serialized_start=914
-  _globals['_ITEMSERVICE']._serialized_end=1031
-  _globals['_CLAIMLOCKSERVICE']._serialized_start=1033
-  _globals['_CLAIMLOCKSERVICE']._serialized_end=1098
-  _globals['_LOCKSERVICE']._serialized_start=1100
-  _globals['_LOCKSERVICE']._serialized_end=1195
-  _globals['_WORKERSERVICE']._serialized_start=1197
-  _globals['_WORKERSERVICE']._serialized_end=1255
-  _globals['_REPLICASERVICE']._serialized_start=1258
-  _globals['_REPLICASERVICE']._serialized_end=1387
+  _globals['_VOTEREQUEST']._serialized_start=914
+  _globals['_VOTEREQUEST']._serialized_end=963
+  _globals['_VOTEREPLY']._serialized_start=965
+  _globals['_VOTEREPLY']._serialized_end=1012
+  _globals['_HEARTBEATREQUEST']._serialized_start=1014
+  _globals['_HEARTBEATREQUEST']._serialized_end=1065
+  _globals['_HEARTBEATREPLY']._serialized_start=1067
+  _globals['_HEARTBEATREPLY']._serialized_end=1114
+  _globals['_ITEMSERVICE']._serialized_start=1116
+  _globals['_ITEMSERVICE']._serialized_end=1233
+  _globals['_CLAIMLOCKSERVICE']._serialized_start=1235
+  _globals['_CLAIMLOCKSERVICE']._serialized_end=1300
+  _globals['_LOCKSERVICE']._serialized_start=1302
+  _globals['_LOCKSERVICE']._serialized_end=1397
+  _globals['_WORKERSERVICE']._serialized_start=1399
+  _globals['_WORKERSERVICE']._serialized_end=1457
+  _globals['_REPLICASERVICE']._serialized_start=1460
+  _globals['_REPLICASERVICE']._serialized_end=1589
+  _globals['_RAFTSERVICE']._serialized_start=1591
+  _globals['_RAFTSERVICE']._serialized_end=1698
 # @@protoc_insertion_point(module_scope)

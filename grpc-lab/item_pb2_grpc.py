@@ -558,3 +558,118 @@ class ReplicaService:
             timeout,
             metadata,
             _registered_method=True)
+
+
+class RaftServiceStub:
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.RequestVote = channel.unary_unary(
+                '/RaftService/RequestVote',
+                request_serializer=item__pb2.VoteRequest.SerializeToString,
+                response_deserializer=item__pb2.VoteReply.FromString,
+                _registered_method=True)
+        self.AppendEntries = channel.unary_unary(
+                '/RaftService/AppendEntries',
+                request_serializer=item__pb2.HeartbeatRequest.SerializeToString,
+                response_deserializer=item__pb2.HeartbeatReply.FromString,
+                _registered_method=True)
+
+
+class RaftServiceServicer:
+    """Missing associated documentation comment in .proto file."""
+
+    def RequestVote(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AppendEntries(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_RaftServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'RequestVote': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequestVote,
+                    request_deserializer=item__pb2.VoteRequest.FromString,
+                    response_serializer=item__pb2.VoteReply.SerializeToString,
+            ),
+            'AppendEntries': grpc.unary_unary_rpc_method_handler(
+                    servicer.AppendEntries,
+                    request_deserializer=item__pb2.HeartbeatRequest.FromString,
+                    response_serializer=item__pb2.HeartbeatReply.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'RaftService', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+    server.add_registered_method_handlers('RaftService', rpc_method_handlers)
+
+
+ # This class is part of an EXPERIMENTAL API.
+class RaftService:
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def RequestVote(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/RaftService/RequestVote',
+            item__pb2.VoteRequest.SerializeToString,
+            item__pb2.VoteReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AppendEntries(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/RaftService/AppendEntries',
+            item__pb2.HeartbeatRequest.SerializeToString,
+            item__pb2.HeartbeatReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)

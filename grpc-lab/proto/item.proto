@@ -100,4 +100,29 @@ message ValueState {
   int32 lamport_timestamp = 3;
   string origin_replica = 4;
 }
+// --- Append to the bottom of grpc-lab/proto/item.proto ---
 
+service RaftService {
+  rpc RequestVote (VoteRequest) returns (VoteReply);
+  rpc AppendEntries (HeartbeatRequest) returns (HeartbeatReply);
+}
+
+message VoteRequest {
+  int32 term = 1;
+  string candidate_id = 2;
+}
+
+message VoteReply {
+  int32 term = 1;
+  bool vote_granted = 2;
+}
+
+message HeartbeatRequest {
+  int32 term = 1;
+  string leader_id = 2;
+}
+
+message HeartbeatReply {
+  int32 term = 1;
+  bool success = 2;
+}
