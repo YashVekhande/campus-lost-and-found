@@ -9,32 +9,16 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build Docker Image') {
+        stage('Build Frontend Image') {
             steps {
-                script {
-                    echo "Building Campus Lost & Found Image..."
-                    appImage = docker.build("campus-lost-and-found:${env.BUILD_ID}")
-                }
-            }
-        }
-        stage('Install Frontend Dependencies') {
-            steps {
-                script {
-                    appImage.inside {
-                        sh 'npm ci'
-                    }
-                }
+                echo "Building Campus Lost & Found Image..."
+                bat "docker build -t campus-lost-and-found:${env.BUILD_ID} ."
             }
         }
         stage('Test Backend Lambdas') {
             steps {
-                script {
-                    appImage.inside {
-                        // Assuming you add pytest to your requirements in the future
-                        echo "Running Python unit tests..."
-                        sh 'python3 -m unittest discover -s backend'
-                    }
-                }
+                echo "Running Python unit tests in an isolated container..."
+                bat "docker run --rm -v \"%CD%\\backend\":/app -w /app python:3.9-slim python -m unittest discover"
             }
         }
     }
