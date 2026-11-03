@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,7 +14,7 @@ export default function ClaimModal({ item, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentUser) {
-      alert("You must be logged in to claim an item.");
+      toast.error("You must be logged in to claim an item.");
       return;
     }
     
@@ -25,11 +26,11 @@ export default function ClaimModal({ item, onClose }) {
         claimerEmail: currentUser.email,
         message: message
       });
-      alert("Claim submitted successfully! The owner has been notified.");
+      toast.success("Claim submitted successfully! The owner has been notified.");
       onClose();
     } catch (error) {
       console.error(error);
-      alert("Failed to submit claim. Please try again.");
+      toast.error("Failed to submit claim. Please try again.");
     } finally {
       setSubmitting(false);
     }

@@ -9,7 +9,8 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState(''); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedItemToClaim, setSelectedItemToClaim] = useState(null); 
+  const [selectedItemToClaim, setSelectedItemToClaim] = useState(null);
+  const [fullscreenImage, setFullscreenImage] = useState(null); 
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -32,11 +33,9 @@ export default function Home() {
     fetchItems();
   }, []);
 
-  // Filter items based on the search query (checks description)
   const filteredItems = items.filter(item => {
     const query = searchQuery.toLowerCase();
     const matchesDescription = item.description?.toLowerCase().includes(query);
-    // We can still secretly check backend tags if they exist, without showing them
     const matchesTags = item.tags?.some(tag => tag.toLowerCase().includes(query));
     
     return matchesDescription || matchesTags;
@@ -52,7 +51,6 @@ export default function Home() {
         <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Help your campus community recover their items.</p>
       </div>
       
-      {/* Search Bar UI */}
       <div style={{ marginBottom: '2rem' }}>
         <input 
           type="text" 
@@ -95,6 +93,8 @@ export default function Home() {
               <img 
                 src={item.imageUrl || 'https://placehold.co/400x250/1e293b/94a3b8?text=No+Image'} 
                 alt="item" 
+                onClick={(e) => setFullscreenImage(e.target.src)}
+                style={{ cursor: 'pointer' }}
                 onError={(e) => { e.target.src = 'https://placehold.co/400x250/1e293b/ef4444?text=Image+Error'; }}
               />
               
@@ -107,7 +107,6 @@ export default function Home() {
                 </span>
               </div>
 
-              {/* The description now takes center stage */}
               <p style={{ flexGrow: 1, fontWeight: '500', fontSize: '1.05rem', marginBottom: '1rem' }}>
                 {item.description || "No description provided."}
               </p>
@@ -128,6 +127,23 @@ export default function Home() {
           item={selectedItemToClaim} 
           onClose={() => setSelectedItemToClaim(null)} 
         />
+      )}
+
+      {fullscreenImage && (
+        <div className="modal-overlay" onClick={() => setFullscreenImage(null)}>
+          <img 
+            src={fullscreenImage} 
+            alt="Fullscreen view" 
+            onClick={(e) => e.stopPropagation()} 
+            style={{ 
+              maxWidth: '95vw', 
+              maxHeight: '90vh', 
+              objectFit: 'contain', 
+              borderRadius: '8px',
+              boxShadow: 'var(--shadow-hover)'
+            }} 
+          />
+        </div>
       )}
     </div>
   );

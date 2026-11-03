@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const BUCKET_NAME = import.meta.env.VITE_BUCKET_NAME; 
@@ -17,7 +18,9 @@ export default function PostItem() {
   // Security Guard: Boot unauthorized users to /auth
   useEffect(() => {
     if (!currentUser) {
-      alert("You must be logged in to post items!");
+      toast.error("You must be logged in to post items!", {
+        id: 'auth-toast' // <-- This prevents duplicates
+      });
       navigate('/auth');
     }
   }, [currentUser, navigate]);
@@ -38,7 +41,7 @@ export default function PostItem() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.file) return alert("Please select an image!");
+    if (!formData.file) return toast.error("Please select an image!");
     if (!currentUser) return;
     
     setUploading(true);
@@ -66,12 +69,12 @@ export default function PostItem() {
 
       await axios.post(`${API_URL}/items`, itemData);
 
-      alert("Success! The AI is currently analyzing your photo.");
+      toast.success("Success! The AI is currently analyzing your photo.");
       navigate('/'); 
       
     } catch (error) {
       console.error("Error posting item:", error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong.");
     } finally {
       setUploading(false);
     }

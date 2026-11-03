@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -8,6 +9,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fullscreenImage, setFullscreenImage] = useState(null);
 
   const token = localStorage.getItem('token');
   const userString = localStorage.getItem('user');
@@ -21,17 +23,15 @@ export default function Dashboard() {
 
     const fetchDashboardItems = async () => {
       try {
-        // FIX: Added the empty {} object before the headers configuration!
         const response = await axios.post(`${API_URL}/dashboard`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        // Ensure we always set an array, even if AWS returns null
         setItems(response.data || []);
       } catch (error) {
         console.error("Dashboard fetch error:", error);
         if (error.response?.status === 401) {
-          alert("Session expired. Please log in again.");
+          toast.error("Session expired. Please log in again.");
           localStorage.clear();
           navigate('/auth');
         }
@@ -55,7 +55,7 @@ export default function Dashboard() {
       setItems(items.filter(item => item.itemId !== itemId));
     } catch (error) {
       console.error("Error resolving item:", error);
-      alert("Failed to resolve item.");
+      toast.error("Failed to resolve item.");
     }
   };
 
@@ -76,7 +76,12 @@ export default function Dashboard() {
           {items.map(item => (
             <div key={item.itemId} className="item-card" style={{ borderLeft: '4px solid var(--primary)' }}>
               <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '1rem', marginBottom: '1rem' }}>
-                <img src={item.imageUrl} alt="Item" style={{ width: '80px', height: '80px', borderRadius: '8px', objectFit: 'cover' }} />
+                <img 
+                  src={item.imageUrl} 
+                  alt="Item" 
+                  onClick={() => setFullscreenImage(item.imageUrl)}
+                  style={{ width: '80px', height: '80px', borderRadius: '8px', objectFit: 'cover', cursor: 'pointer' }} 
+                />
                 <div>
                   <span className={`badge ${item.type}`}>{String(item.type).toUpperCase()}</span>
                   <p style={{ fontWeight: '600', marginTop: '0.5rem' }}>{item.description}</p>
@@ -104,6 +109,23 @@ export default function Dashboard() {
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {fullscreenImage && (
+        <div className="modal-overlay" onClick={() => setFullscreenImage(null)}>
+          <img 
+            src={fullscreenImage} 
+            alt="Fullscreen view" 
+            onClick={(e) => e.stopPropagation()} 
+            style={{ 
+              maxWidth: '95vw', 
+              maxHeight: '90vh', 
+              objectFit: 'contain', 
+              borderRadius: '8px',
+              boxShadow: 'var(--shadow-hover)'
+            }} 
+          />
         </div>
       )}
     </div>

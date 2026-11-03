@@ -69,11 +69,16 @@ export default function Auth() {
               <input
                 type="text"
                 required
+                minLength={3}
+                maxLength={20}
+                pattern="^[a-zA-Z0-9_]+$"
+                title="Letters, numbers, and underscores only"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="auth-input"
                 placeholder="Choose a unique username"
               />
+              <small className="input-helper">3-20 characters, letters, numbers, and underscores only.</small>
             </div>
           )}
 
@@ -87,6 +92,7 @@ export default function Auth() {
               className="auth-input"
               placeholder="student@campus.edu"
             />
+            <small className="input-helper">Must be a valid email address.</small>
           </div>
           
           <div>
@@ -94,11 +100,13 @@ export default function Auth() {
             <input
               type="password"
               required
+              minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="auth-input"
               placeholder="••••••••"
             />
+            <small className="input-helper">Must be at least 8 characters long.</small>
           </div>
 
           <button type="submit" disabled={isLoading} className="auth-button">
